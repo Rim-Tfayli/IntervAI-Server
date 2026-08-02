@@ -9,7 +9,7 @@ const protectedRoutes = require("./routes/protectedRoutes");
 
 app.use(express.json());
 app.use("/api/auth", authRoutes);
-app.use("/", protectedRoutes);
+app.use("/api", protectedRoutes);
 
 app.get("/", (req, res) => {
     res.send("Hello, this is IntervAI: server-side");
