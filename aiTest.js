@@ -1,9 +1,9 @@
 require("dotenv").config();
-const model = require("./services/aiService");
+const { generateQuestions } = require("./services/aiService");
 
-async function run() {
-    const result = await model.generateContent("Say Hello Rim");
-    console.log(result.response.text());
+async function run() {;
+    const questions = await generateQuestions("Backend Developer", "Node.js, Express, MongoDB");
+    console.log(questions);
 }
 
 run();
