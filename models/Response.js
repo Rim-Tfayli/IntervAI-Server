@@ -24,8 +24,8 @@ const ResponseSchema = new mongoose.Schema(
         },
         aiFeedback: {
             type: String,
-            required: true,
-            trim: true
+            trim: true,
+            default: ""
         },
         score: {
             type: Number,
