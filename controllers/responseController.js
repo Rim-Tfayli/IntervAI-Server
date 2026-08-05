@@ -33,4 +33,24 @@ async function submitAnswer(req, res){
         res.status(500).json({ message: err.message });
     }
 }
-module.exports = { submitAnswer };
+
+async function toggleFavorite(req, res){
+    try{
+        const { id } = req.params;
+
+        const response = await Response.findById(id);
+        if (!response) {
+            return res.status(404).json({ message: "Response not found" });
+        }
+
+        response.isFavorite = !response.isFavorite;
+        await response.save();
+
+        res.status(200).json({ response });
+    } 
+    catch(err){
+        res.status(500).json({ message: err.message });
+    }
+}
+
+module.exports = { submitAnswer, toggleFavorite };
