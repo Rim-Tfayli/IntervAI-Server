@@ -17,7 +17,7 @@ async function register(req, res) {
         res.status(201).json({ user: { id: user._id, username: user.username, email: user.email } });
     } 
     catch(err){
-        res.status(500).json({ message: err.message });
+        next(err);
     }
 }
 
@@ -43,7 +43,7 @@ async function login(req, res) {
         });
     }
     catch(err){
-        res.status(500).json({ message: err.message });
+        next(err);
     }
     
 }

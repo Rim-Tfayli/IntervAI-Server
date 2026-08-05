@@ -32,7 +32,7 @@ async function startInterview(req, res) {
         res.status(201).json({ interview });
     } 
     catch(err){
-        res.status(500).json({ message: err.message });
+        next(err);
     }
 }
 
@@ -42,7 +42,7 @@ async function getInterviews(req, res){
         res.status(200).json({ userInterviews });
     } 
     catch(err){
-        res.status(500).json({ message: err.message });
+        next(err);
     }
 }
 async function getInterviewById(req, res){
@@ -62,7 +62,7 @@ async function getInterviewById(req, res){
         res.status(200).json({ interview, responses });
     }
     catch(err){
-        res.status(500).json({ message: err.message });
+        next(err);
     }
 }
 
@@ -84,7 +84,7 @@ async function getDashboardStats(req, res){
         res.status(200).json({ interviewCount, averageScore });
     }
     catch(err){
-        res.status(500).json({ message: err.message });
+        next(err);
     }
 }
 

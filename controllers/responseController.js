@@ -31,7 +31,7 @@ async function submitAnswer(req, res){
         res.status(201).json({ responseDocs });
     } 
     catch(err){
-        res.status(500).json({ message: err.message });
+        next(err);
     }
 }
 
@@ -50,7 +50,7 @@ async function toggleFavorite(req, res){
         res.status(200).json({ response });
     } 
     catch(err){
-        res.status(500).json({ message: err.message });
+        next(err);
     }
 }
 async function getFavorites(req, res){
@@ -66,7 +66,7 @@ async function getFavorites(req, res){
         res.status(200).json({ favorites });
     } 
     catch(err){
-        res.status(500).json({ message: err.message });
+        next(err);
     }
 }
 module.exports = { submitAnswer, toggleFavorite, getFavorites };
