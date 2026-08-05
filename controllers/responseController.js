@@ -1,5 +1,6 @@
 const Response = require("../models/Response");
 const { evaluateAnswer } = require("../services/aiService");
+const { completeInterview } = require("../services/interviewService");
 
 async function submitAnswer(req, res){
     try{
@@ -23,6 +24,8 @@ async function submitAnswer(req, res){
         responseDocs.score = evaluation.score;
 
         await responseDocs.save();
+
+        await completeInterview( responseDocs.interviewId );
 
         res.status(201).json({ responseDocs });
     } 
