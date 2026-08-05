@@ -65,4 +65,27 @@ async function getInterviewById(req, res){
         res.status(500).json({ message: err.message });
     }
 }
-module.exports = { startInterview, getInterviews, getInterviewById };
+
+async function getDashboardStats(req, res){
+    try{
+        const completedInterviews = await Interview.find({
+            userId: req.user.id,
+            status: "completed"
+        });
+
+        const interviewCount = completedInterviews.length;
+
+        let averageScore = 0;
+        if(interviewCount > 0){
+            const totalScore = completedInterviews.reduce((sum, interview) => sum + interview.overallScore, 0);
+            averageScore = totalScore / interviewCount;
+        }
+
+        res.status(200).json({ interviewCount, averageScore });
+    }
+    catch(err){
+        res.status(500).json({ message: err.message });
+    }
+}
+
+module.exports = { startInterview, getInterviews, getInterviewById, getDashboardStats };
