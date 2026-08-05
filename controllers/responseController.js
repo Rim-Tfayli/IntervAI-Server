@@ -1,3 +1,4 @@
+const Interview = require("../models/Interview");
 const Response = require("../models/Response");
 const { evaluateAnswer } = require("../services/aiService");
 const { completeInterview } = require("../services/interviewService");
@@ -52,5 +53,20 @@ async function toggleFavorite(req, res){
         res.status(500).json({ message: err.message });
     }
 }
+async function getFavorites(req, res){
+    try{
+        const userInterviews = await Interview.find({ userId: req.user.id });
+        const interviewsIds = userInterviews.map( (interview) => interview._id );
 
-module.exports = { submitAnswer, toggleFavorite };
+        const favorites = await Response.find({ 
+            isFavorite: true,
+            interviewId: { $in: interviewsIds }
+        });
+
+        res.status(200).json({ favorites });
+    } 
+    catch(err){
+        res.status(500).json({ message: err.message });
+    }
+}
+module.exports = { submitAnswer, toggleFavorite, getFavorites };
