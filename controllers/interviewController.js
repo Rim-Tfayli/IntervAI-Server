@@ -53,6 +53,9 @@ async function getInterviewById(req, res){
         if(!interview){
             return res.status(404).json({ message: "Interview not found" });
         }
+        if(interview.userId.toString() !== req.user.id){
+            return res.status(403).json({ message: "Not authorized to view this interview" });
+        }
         
         const responses = await Response.find({ interviewId: interview._id });
 
