@@ -35,4 +35,57 @@ async function startInterview(req, res) {
         res.status(500).json({ message: err.message });
     }
 }
-module.exports = { startInterview };
+
+async function getInterviews(req, res){
+    try{
+        const userInterviews = await Interview.find({ userId: req.user.id });
+        res.status(200).json({ userInterviews });
+    } 
+    catch(err){
+        res.status(500).json({ message: err.message });
+    }
+}
+async function getInterviewById(req, res){
+    try{
+        const interviewId = req.params.id;
+        const interview = await Interview.findById(interviewId);
+
+        if(!interview){
+            return res.status(404).json({ message: "Interview not found" });
+        }
+        if(interview.userId.toString() !== req.user.id){
+            return res.status(403).json({ message: "Not authorized to view this interview" });
+        }
+        
+        const responses = await Response.find({ interviewId: interview._id });
+
+        res.status(200).json({ interview, responses });
+    }
+    catch(err){
+        res.status(500).json({ message: err.message });
+    }
+}
+
+async function getDashboardStats(req, res){
+    try{
+        const completedInterviews = await Interview.find({
+            userId: req.user.id,
+            status: "completed"
+        });
+
+        const interviewCount = completedInterviews.length;
+
+        let averageScore = 0;
+        if(interviewCount > 0){
+            const totalScore = completedInterviews.reduce((sum, interview) => sum + interview.overallScore, 0);
+            averageScore = totalScore / interviewCount;
+        }
+
+        res.status(200).json({ interviewCount, averageScore });
+    }
+    catch(err){
+        res.status(500).json({ message: err.message });
+    }
+}
+
+module.exports = { startInterview, getInterviews, getInterviewById, getDashboardStats };

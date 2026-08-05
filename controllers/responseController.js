@@ -1,5 +1,7 @@
+const Interview = require("../models/Interview");
 const Response = require("../models/Response");
 const { evaluateAnswer } = require("../services/aiService");
+const { completeInterview } = require("../services/interviewService");
 
 async function submitAnswer(req, res){
     try{
@@ -24,10 +26,47 @@ async function submitAnswer(req, res){
 
         await responseDocs.save();
 
+        await completeInterview( responseDocs.interviewId );
+
         res.status(201).json({ responseDocs });
     } 
     catch(err){
         res.status(500).json({ message: err.message });
     }
 }
-module.exports = { submitAnswer };
+
+async function toggleFavorite(req, res){
+    try{
+        const { id } = req.params;
+
+        const response = await Response.findById(id);
+        if (!response) {
+            return res.status(404).json({ message: "Response not found" });
+        }
+
+        response.isFavorite = !response.isFavorite;
+        await response.save();
+
+        res.status(200).json({ response });
+    } 
+    catch(err){
+        res.status(500).json({ message: err.message });
+    }
+}
+async function getFavorites(req, res){
+    try{
+        const userInterviews = await Interview.find({ userId: req.user.id });
+        const interviewsIds = userInterviews.map( (interview) => interview._id );
+
+        const favorites = await Response.find({ 
+            isFavorite: true,
+            interviewId: { $in: interviewsIds }
+        });
+
+        res.status(200).json({ favorites });
+    } 
+    catch(err){
+        res.status(500).json({ message: err.message });
+    }
+}
+module.exports = { submitAnswer, toggleFavorite, getFavorites };
