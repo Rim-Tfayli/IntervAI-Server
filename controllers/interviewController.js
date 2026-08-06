@@ -5,7 +5,7 @@ const Interview = require("../models/Interview");
 const Response = require("../models/Response");
 const { generateQuestions } = require("../services/aiService");
 
-async function startInterview(req, res) {
+async function startInterview(req, res, next) {
     try{
         const { role, about } = req.body;
 
@@ -36,7 +36,7 @@ async function startInterview(req, res) {
     }
 }
 
-async function getInterviews(req, res){
+async function getInterviews(req, res, next){
     try{
         const userInterviews = await Interview.find({ userId: req.user.id });
         res.status(200).json({ userInterviews });
@@ -45,7 +45,7 @@ async function getInterviews(req, res){
         next(err);
     }
 }
-async function getInterviewById(req, res){
+async function getInterviewById(req, res, next){
     try{
         const interviewId = req.params.id;
         const interview = await Interview.findById(interviewId);
@@ -66,7 +66,7 @@ async function getInterviewById(req, res){
     }
 }
 
-async function getDashboardStats(req, res){
+async function getDashboardStats(req, res, next){
     try{
         const completedInterviews = await Interview.find({
             userId: req.user.id,

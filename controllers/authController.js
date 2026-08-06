@@ -2,7 +2,7 @@ const bcrypt = require("bcryptjs");
 const User = require("../models/User");
 const jwt = require("jsonwebtoken");
 
-async function register(req, res) {
+async function register(req, res, next) {
     try{
         const { username, email, password } = req.body;
 
@@ -14,14 +14,19 @@ async function register(req, res) {
             password: hashedPassword
         });
 
-        res.status(201).json({ user: { id: user._id, username: user.username, email: user.email } });
+        const token = jwt.sign({ id: user._id }, process.env.JWT_SECRET, { expiresIn: "7d" });
+
+        res.status(201).json({
+            token,
+            user: { id: user._id, username: user.username, email: user.email }
+        });
     } 
     catch(err){
         next(err);
     }
 }
 
-async function login(req, res) {
+async function login(req, res, next) {
     try{
         const { email, password } = req.body;
         

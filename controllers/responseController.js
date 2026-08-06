@@ -3,7 +3,7 @@ const Response = require("../models/Response");
 const { evaluateAnswer } = require("../services/aiService");
 const { completeInterview } = require("../services/interviewService");
 
-async function submitAnswer(req, res){
+async function submitAnswer(req, res, next){
     try{
         const { responseId, userAnswer } = req.body;
 
@@ -35,7 +35,7 @@ async function submitAnswer(req, res){
     }
 }
 
-async function toggleFavorite(req, res){
+async function toggleFavorite(req, res, next){
     try{
         const { id } = req.params;
 
@@ -53,7 +53,7 @@ async function toggleFavorite(req, res){
         next(err);
     }
 }
-async function getFavorites(req, res){
+async function getFavorites(req, res, next){
     try{
         const userInterviews = await Interview.find({ userId: req.user.id });
         const interviewsIds = userInterviews.map( (interview) => interview._id );
