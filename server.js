@@ -3,6 +3,8 @@ const express = require("express");
 const mongoose = require("mongoose");
 const connectDB = require("./config/db");
 
+const cors = require("cors");
+
 const app = express();
 const authRoutes = require("./routes/authRoutes");
 const protectedRoutes = require("./routes/protectedRoutes");
@@ -10,6 +12,7 @@ const interviewRoutes = require("./routes/interviewRoutes");
 const responseRoutes = require("./routes/responseRoutes");
 const errorHandler = require("./middleware/errorHandler");
 
+app.use(cors());
 app.use(express.json());
 app.use("/api/auth", authRoutes);
 app.use("/api", protectedRoutes);
