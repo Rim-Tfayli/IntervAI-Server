@@ -1,0 +1,36 @@
+services:
+  mongo:
+    image: mongo:7
+    container_name: intervai-mongo
+    ports:
+      - "27017:27017"
+    volumes:
+      - mongo-data:/data/db
+    restart: unless-stopped
+
+  server:
+    build: ./IntervAi-Server
+    container_name: intervai-server
+    ports:
+      - "5000:5000"
+    environment:
+      - PORT=5000
+      - MONGO_URI=mongodb://mongo:27017/IntervAI
+      - JWT_SECRET=eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9
+      - GEMINI_API_KEY=${GEMINI_API_KEY}
+      - GEMINI_MODEL=gemini-3.8-flash
+    depends_on:
+      - mongo
+    restart: unless-stopped
+
+  client:
+    build: ./IntervAi-Client
+    container_name: intervai-client
+    ports:
+      - "3000:80"
+    depends_on:
+      - server
+    restart: unless-stopped
+
+volumes:
+  mongo-data:
